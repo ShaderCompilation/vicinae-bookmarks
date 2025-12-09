@@ -3,7 +3,10 @@
   "name": "bookmarks",
   "title": "Bookmarks",
   "description": "Add bookmarks to then open them easily",
-  "categories": [],
+  "categories": [
+    "Productivity",
+    "Web"
+  ],
   "license": "MIT",
   "author": "ShaderCompilation",
   "contributors": [],
