@@ -20,7 +20,7 @@ export async function loadLinks(): Promise<CustomLink[]> {
     if (!data) {
       return [];
     }
-    const parsed = JSON.parse(data);
+    const parsed = JSON.parse(String(data));
     // Validate that we got an array
     if (!Array.isArray(parsed)) {
       console.warn("Invalid storage data format, resetting to empty array");
