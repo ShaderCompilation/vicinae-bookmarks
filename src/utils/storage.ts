@@ -1,7 +1,7 @@
 import { LocalStorage } from "@vicinae/api";
 import type { CustomLink, CreateLinkInput, UpdateLinkInput } from "../types";
 
-const STORAGE_KEY = "custom_links";
+const STORAGE_KEY = "bookmarks";
 
 /**
  * Generate a unique ID for a new link
