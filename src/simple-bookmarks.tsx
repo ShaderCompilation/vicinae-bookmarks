@@ -1,9 +1,20 @@
 import { useState, useEffect } from "react";
-import { Action, ActionPanel, Alert, confirmAlert, Icon, List, showToast, Toast } from "@vicinae/api";
+import {
+  Action,
+  ActionPanel,
+  Alert,
+  Clipboard,
+  confirmAlert,
+  Icon,
+  List,
+  showToast,
+  Toast,
+} from "@vicinae/api";
 import type { CustomLink } from "./types";
 import { deleteLink, loadLinks } from "./utils/storage";
 import { AddLinkForm } from "./components/AddLinkForm";
 import { EditLinkForm } from "./components/EditLinkForm";
+import { ImportForm } from "./components/ImportForm";
 
 export default function CustomLinksCommand() {
   const [links, setLinks] = useState<CustomLink[]>([]);
@@ -62,12 +73,67 @@ export default function CustomLinksCommand() {
     }
   }
 
+  function handleLinksImported(importedLinks: CustomLink[]) {
+    setLinks(importedLinks);
+  }
+
+  async function handleExportLinks() {
+    if (links.length === 0) {
+      await showToast({
+        style: Toast.Style.Failure,
+        title: "Nothing to Export",
+        message: "You don't have any bookmarks yet",
+      });
+      return;
+    }
+
+    // Export only the essential data (title, url, createdAt)
+    const exportData = links.map(({ title, url, createdAt }) => ({
+      title,
+      url,
+      createdAt,
+    }));
+
+    const jsonString = JSON.stringify(exportData, null, 2);
+    await Clipboard.copy(jsonString);
+
+    await showToast({
+      style: Toast.Style.Success,
+      title: "Bookmarks Exported",
+      message: `${links.length} bookmark${
+        links.length !== 1 ? "s" : ""
+      } copied to clipboard`,
+    });
+  }
+
   function renderAddLinkAction() {
     return (
       <Action.Push
         title="Add New Link"
         icon={Icon.Plus}
         target={<AddLinkForm onLinkAdded={handleLinkAdded} />}
+      />
+    );
+  }
+
+  function renderExportAction() {
+    return (
+      <Action
+        title="Export Bookmarks"
+        icon={Icon.Upload}
+        shortcut={{ modifiers: ["cmd", "shift"], key: "e" }}
+        onAction={handleExportLinks}
+      />
+    );
+  }
+
+  function renderImportAction() {
+    return (
+      <Action.Push
+        title="Import Bookmarks"
+        icon={Icon.Download}
+        shortcut={{ modifiers: ["cmd", "shift"], key: "i" }}
+        target={<ImportForm onLinksImported={handleLinksImported} />}
       />
     );
   }
@@ -92,7 +158,7 @@ export default function CustomLinksCommand() {
       searchText={searchText}
       onSearchTextChange={setSearchText}
       searchBarPlaceholder="Search links..."
-      navigationTitle="Bookmarks"
+      navigationTitle="Simple Bookmarks"
     >
       {/* Show Add New Link item only when not searching */}
       {!isSearching && (
@@ -105,6 +171,10 @@ export default function CustomLinksCommand() {
             actions={
               <ActionPanel>
                 {renderAddLinkAction()}
+                <ActionPanel.Section title="Import/Export">
+                  {renderExportAction()}
+                  {renderImportAction()}
+                </ActionPanel.Section>
               </ActionPanel>
             }
           />
@@ -112,7 +182,12 @@ export default function CustomLinksCommand() {
       )}
 
       {filteredLinks.length > 0 && (
-        <List.Section title="Your Links" subtitle={`${filteredLinks.length} link${filteredLinks.length !== 1 ? "s" : ""}`}>
+        <List.Section
+          title="Your Links"
+          subtitle={`${filteredLinks.length} link${
+            filteredLinks.length !== 1 ? "s" : ""
+          }`}
+        >
           {filteredLinks.map((link) => (
             <List.Item
               key={link.id}
@@ -157,6 +232,10 @@ export default function CustomLinksCommand() {
                     style="destructive"
                     onAction={() => handleDeleteLink(link)}
                   />
+                  <ActionPanel.Section title="Import/Export">
+                    {renderExportAction()}
+                    {renderImportAction()}
+                  </ActionPanel.Section>
                 </ActionPanel>
               }
             />

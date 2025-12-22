@@ -1,7 +1,7 @@
 import { LocalStorage } from "@vicinae/api";
 import type { CustomLink, CreateLinkInput, UpdateLinkInput } from "../types";
 
-const STORAGE_KEY = "bookmarks";
+const STORAGE_KEY = "simple-bookmarks";
 
 /**
  * Generate a unique ID for a new link
@@ -118,4 +118,3 @@ export async function getLinkById(id: string): Promise<CustomLink | null> {
   const links = await loadLinks();
   return links.find((link) => link.id === id) ?? null;
 }
-

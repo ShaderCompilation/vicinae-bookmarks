@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/vicinaehq/vicinae/refs/heads/main/extra/schemas/extension.json",
-  "name": "bookmarks",
-  "title": "Bookmarks",
+  "name": "simple-bookmarks",
+  "title": "Simple Bookmarks",
   "description": "Add bookmarks to then open them easily",
   "categories": [
     "Productivity",
@@ -14,8 +14,8 @@
   "icon": "extension_icon.png",
   "commands": [
     {
-      "name": "bookmarks",
-      "title": "Bookmarks",
+      "name": "simple-bookmarks",
+      "title": "Simple Bookmarks",
       "subtitle": "Add and open bookmarks",
       "description": "Easily add and then open bookmarks",
       "mode": "view"
